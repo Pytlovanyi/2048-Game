@@ -20,6 +20,7 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
+        padding: 10px;
       }
 
       h1 {
@@ -101,6 +102,45 @@
       .tile[data-value="2048"] {
         background: #edc22e;
         color: #fff;
+      }
+
+      /* Адаптація для мобільних пристроїв */
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2rem;
+        }
+
+        #game-board {
+          grid-template-columns: repeat(4, 70px);
+          grid-template-rows: repeat(4, 70px);
+          gap: 5px;
+          padding: 5px;
+        }
+
+        .tile {
+          width: 70px;
+          height: 70px;
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        #game-board {
+          grid-template-columns: repeat(4, 50px);
+          grid-template-rows: repeat(4, 50px);
+          gap: 5px;
+          padding: 5px;
+        }
+
+        .tile {
+          width: 50px;
+          height: 50px;
+          font-size: 14px;
+        }
       }
     </style>
   </head>
