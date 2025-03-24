@@ -207,3 +207,43 @@ function checkKey(e) {
       break;
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+
+  document.addEventListener("touchstart", (event) => {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+  });
+
+  document.addEventListener("touchend", (event) => {
+    touchEndX = event.changedTouches[0].clientX;
+    touchEndY = event.changedTouches[0].clientY;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    let diffX = touchEndX - touchStartX;
+    let diffY = touchEndY - touchStartY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 50) {
+        console.log("Свайп вправо");
+        moveRight();
+      } else if (diffX < -50) {
+        console.log("Свайп вліво");
+        moveLeft();
+      }
+    } else {
+      if (diffY > 50) {
+        console.log("Свайп вниз");
+        moveDown();
+      } else if (diffY < -50) {
+        console.log("Свайп вгору");
+        moveUp();
+      }
+    }
+  }
