@@ -231,19 +231,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Math.abs(diffX) > Math.abs(diffY)) {
       if (diffX > 50) {
-        console.log("Свайп вправо");
-        moveRight();
+        moveRight(0);
+        moveRight(4);
+        moveRight(8);
+        moveRight(12);
+        addElementDiv();
       } else if (diffX < -50) {
-        console.log("Свайп вліво");
-        moveLeft();
+        moveLeft(0);
+        moveLeft(4);
+        moveLeft(8);
+        moveLeft(12);
+        addElementDiv();
       }
     } else {
       if (diffY > 50) {
-        console.log("Свайп вниз");
-        moveDown();
+        moveDown(0);
+        moveDown(1);
+        moveDown(2);
+        moveDown(3);
+        addElementDiv();
       } else if (diffY < -50) {
-        console.log("Свайп вгору");
-        moveUp();
+        moveUP(0);
+        moveUP(1);
+        moveUP(2);
+        moveUP(3);
+        addElementDiv();
       }
     }
   }
+});
