@@ -1,7 +1,10 @@
 document.onkeydown = checkKey;
 const gameBoard = document.getElementById("game-board");
+const btnRestart = document.getElementById("btnRestart");
+const btnUndo = document.getElementById("btnUndo");
 let numbers = [];
 let checkIterationOnDesk = false;
+let stateEachElement = [];
 
 const createArrayNumbers = () => {
   let number = Math.random() > 0.5 ? 1 : 2;
@@ -32,6 +35,17 @@ const gameOver = () => {
     element.removeAttribute("data-value");
   });
   addElementDiv();
+};
+const state = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  stateEachElement = [...getDiv].map((element) => element.textContent);
+};
+const undo = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  for (let i = 0; i < getDiv.length; i++) {
+    getDiv[i].textContent = stateEachElement[i];
+    getDiv[i].setAttribute("data-value", stateEachElement[i]);
+  }
 };
 const addElementDiv = () => {
   const getDiv = document.getElementsByClassName("tile");
@@ -178,6 +192,7 @@ function checkKey(e) {
   e = e || window.event;
   switch (e.keyCode) {
     case 38:
+      state();
       moveUP(0);
       moveUP(1);
       moveUP(2);
@@ -231,31 +246,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Math.abs(diffX) > Math.abs(diffY)) {
       if (diffX > 50) {
-        moveRight(0);
-        moveRight(4);
-        moveRight(8);
-        moveRight(12);
-        addElementDiv();
+        checkKey({ keyCode: 39 });
       } else if (diffX < -50) {
-        moveLeft(0);
-        moveLeft(4);
-        moveLeft(8);
-        moveLeft(12);
-        addElementDiv();
+        checkKey({ keyCode: 37 });
       }
     } else {
       if (diffY > 50) {
-        moveDown(0);
-        moveDown(1);
-        moveDown(2);
-        moveDown(3);
-        addElementDiv();
+        checkKey({ keyCode: 40 });
       } else if (diffY < -50) {
-        moveUP(0);
-        moveUP(1);
-        moveUP(2);
-        moveUP(3);
-        addElementDiv();
+        checkKey({ keyCode: 38 });
       }
     }
   }
@@ -268,3 +267,5 @@ document.addEventListener(
   },
   { passive: false }
 );
+btnRestart.addEventListener("click", gameOver);
+btnUndo.addEventListener("click", undo);
