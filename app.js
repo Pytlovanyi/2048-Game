@@ -38,6 +38,7 @@ const gameOver = () => {
   addElementDiv();
   state();
 };
+
 const setLocalStorage = () => {
   const getDiv = document.getElementsByClassName("tile");
   let stateEachElementStorage = [...getDiv].map(
@@ -56,7 +57,14 @@ const restoreData = () => {
     }
   }
 };
-
+const yourScore = () => {
+  let yourScoreString = newStateEachElement.map(Number);
+  let yourScore = Math.max(
+    ...yourScoreString.filter((element) => typeof element === "number")
+  );
+  const score = document.getElementById("score");
+  score.textContent = yourScore;
+};
 const state = () => {
   //save state each element on the desk
   const getDiv = document.getElementsByClassName("tile");
@@ -65,6 +73,7 @@ const state = () => {
 const checkChangeNewState = () => {
   const getDiv = document.getElementsByClassName("tile");
   newStateEachElement = [...getDiv].map((element) => element.textContent);
+  yourScore();
   return (
     stateEachElement.length === newStateEachElement.length &&
     stateEachElement.every((val, index) => val === newStateEachElement[index])

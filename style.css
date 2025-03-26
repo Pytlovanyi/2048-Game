@@ -27,7 +27,9 @@ h1 {
     color: #776e65;
     margin-bottom: 20px;
 }
-
+#score-display{
+    margin: 20px;
+}
 #game-container {
     background: #bbada0;
     padding: 15px;
