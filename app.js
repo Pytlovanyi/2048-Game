@@ -5,6 +5,7 @@ const btnUndo = document.getElementById("btnUndo");
 let numbers = [];
 let checkIterationOnDesk = false;
 let stateEachElement = [];
+let newStateEachElement = [];
 
 const createArrayNumbers = () => {
   let number = Math.random() > 0.5 ? 1 : 2;
@@ -35,17 +36,50 @@ const gameOver = () => {
     element.removeAttribute("data-value");
   });
   addElementDiv();
+  state();
 };
+const setLocalStorage = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  let stateEachElementStorage = [...getDiv].map(
+    (element) => element.textContent
+  );
+  localStorage.setItem("gameState", JSON.stringify(stateEachElementStorage));
+};
+
+const restoreData = () => {
+  if (localStorage.getItem("gameState")) {
+    const getDiv = document.getElementsByClassName("tile");
+    let savedState = JSON.parse(localStorage.getItem("gameState") || "[]");
+    for (let i = 0; i < getDiv.length; i++) {
+      getDiv[i].textContent = savedState[i] || ""; // Уникаємо помилок, якщо елемент відсутній
+      getDiv[i].setAttribute("data-value", savedState[i] || "");
+    }
+  }
+};
+
 const state = () => {
+  //save state each element on the desk
   const getDiv = document.getElementsByClassName("tile");
   stateEachElement = [...getDiv].map((element) => element.textContent);
 };
+const checkChangeNewState = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  newStateEachElement = [...getDiv].map((element) => element.textContent);
+  return (
+    stateEachElement.length === newStateEachElement.length &&
+    stateEachElement.every((val, index) => val === newStateEachElement[index])
+  );
+};
 const undo = () => {
   const getDiv = document.getElementsByClassName("tile");
+  if ([...getDiv].some((element) => element.textContent)) {
+  }
   for (let i = 0; i < getDiv.length; i++) {
     getDiv[i].textContent = stateEachElement[i];
     getDiv[i].setAttribute("data-value", stateEachElement[i]);
   }
+  state();
+  setLocalStorage();
 };
 const addElementDiv = () => {
   const getDiv = document.getElementsByClassName("tile");
@@ -187,6 +221,8 @@ const moveRight = (columnIndex) => {
 createArrayNumbers();
 createDiv();
 iterateDiv();
+restoreData();
+state();
 
 function checkKey(e) {
   e = e || window.event;
@@ -197,28 +233,43 @@ function checkKey(e) {
       moveUP(1);
       moveUP(2);
       moveUP(3);
-      addElementDiv();
+      if (!checkChangeNewState()) {
+        addElementDiv();
+        setLocalStorage();
+      }
       break;
     case 40:
+      state();
       moveDown(0);
       moveDown(1);
       moveDown(2);
       moveDown(3);
-      addElementDiv();
+      if (!checkChangeNewState()) {
+        addElementDiv();
+        setLocalStorage();
+      }
       break;
     case 37:
+      state();
       moveLeft(0);
       moveLeft(4);
       moveLeft(8);
       moveLeft(12);
-      addElementDiv();
+      if (!checkChangeNewState()) {
+        addElementDiv();
+        setLocalStorage();
+      }
       break;
     case 39:
+      state();
       moveRight(0);
       moveRight(4);
       moveRight(8);
       moveRight(12);
-      addElementDiv();
+      if (!checkChangeNewState()) {
+        addElementDiv();
+        setLocalStorage();
+      }
       break;
   }
 }
