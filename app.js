@@ -6,6 +6,7 @@ let numbers = [];
 let checkIterationOnDesk = false;
 let stateEachElement = [];
 let newStateEachElement = [];
+const score = document.getElementById("score");
 
 const createArrayNumbers = () => {
   let number = Math.random() > 0.5 ? 1 : 2;
@@ -37,6 +38,7 @@ const gameOver = () => {
   });
   addElementDiv();
   state();
+  setLocalStorage();
 };
 
 const setLocalStorage = () => {
@@ -45,6 +47,7 @@ const setLocalStorage = () => {
     (element) => element.textContent
   );
   localStorage.setItem("gameState", JSON.stringify(stateEachElementStorage));
+  localStorage.setItem("yourScore", JSON.stringify(yourScore()));
 };
 
 const restoreData = () => {
@@ -55,15 +58,22 @@ const restoreData = () => {
       getDiv[i].textContent = savedState[i] || ""; // Уникаємо помилок, якщо елемент відсутній
       getDiv[i].setAttribute("data-value", savedState[i] || "");
     }
+    for (let i = 0; i < getDiv.length; i++) {
+      if (!getDiv[i].textContent) {
+        getDiv[i].removeAttribute("data-value");
+      }
+    }
   }
+  if (localStorage.getItem("yourScore"))
+    score.textContent = localStorage.getItem("yourScore");
 };
 const yourScore = () => {
   let yourScoreString = newStateEachElement.map(Number);
   let yourScore = Math.max(
     ...yourScoreString.filter((element) => typeof element === "number")
   );
-  const score = document.getElementById("score");
   score.textContent = yourScore;
+  return yourScore;
 };
 const state = () => {
   //save state each element on the desk
@@ -86,6 +96,11 @@ const undo = () => {
   for (let i = 0; i < getDiv.length; i++) {
     getDiv[i].textContent = stateEachElement[i];
     getDiv[i].setAttribute("data-value", stateEachElement[i]);
+  }
+  for (let i = 0; i < getDiv.length; i++) {
+    if (!getDiv[i].textContent) {
+      getDiv[i].removeAttribute("data-value");
+    }
   }
   state();
   setLocalStorage();
@@ -152,9 +167,7 @@ const sortAndAddNumbersInArray = (arrayLine, reverse = false) => {
 const moveUP = (columnIndex) => {
   const getDiv = document.getElementsByClassName("tile");
   const arrayLine = [...getDiv].filter((_, index) => index % 4 === columnIndex);
-
   let numbersFromTrue = sortAndAddNumbersInArray(arrayLine);
-
   numbersFromTrue.forEach((element) => {
     if (element) {
       getDiv[columnIndex].textContent = element;
