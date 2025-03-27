@@ -65,14 +65,17 @@ const restoreData = () => {
     }
   }
   if (localStorage.getItem("yourScore"))
-    score.textContent = localStorage.getItem("yourScore");
+    score.textContent =
+      localStorage.getItem("yourScore") > 0
+        ? localStorage.getItem("yourScore")
+        : 0;
 };
 const yourScore = () => {
   let yourScoreString = newStateEachElement.map(Number);
   let yourScore = Math.max(
     ...yourScoreString.filter((element) => typeof element === "number")
   );
-  score.textContent = yourScore;
+  score.textContent = yourScore > 0 ? yourScore : 0;
   return yourScore;
 };
 const state = () => {
@@ -105,7 +108,7 @@ const undo = () => {
   state();
   setLocalStorage();
 };
-const addElementDiv = () => {
+const checkWin = () => {
   const getDiv = document.getElementsByClassName("tile");
   const arrayWithoutNumbers = [...getDiv].filter(
     (element) => !element.hasAttribute("data-value")
@@ -118,12 +121,18 @@ const addElementDiv = () => {
   if (arrayWithoutNumbers.length == 0) {
     alert(`Game Over! Your score: ${yourScore}`);
     gameOver();
-  } else {
-    const rand = Math.floor(Math.random() * arrayWithoutNumbers.length);
-    let number = Math.random() > 0.5 ? 2 : 4;
-    arrayWithoutNumbers[rand].textContent = number;
-    arrayWithoutNumbers[rand].setAttribute("data-value", number);
   }
+};
+
+const addElementDiv = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  const arrayWithoutNumbers = [...getDiv].filter(
+    (element) => !element.hasAttribute("data-value")
+  );
+  const rand = Math.floor(Math.random() * arrayWithoutNumbers.length);
+  let number = Math.random() > 0.5 ? 2 : 4;
+  arrayWithoutNumbers[rand].textContent = number;
+  arrayWithoutNumbers[rand].setAttribute("data-value", number);
 };
 const sortAndAddNumbersInArray = (arrayLine, reverse = false) => {
   let arrayTrue = [];
@@ -258,6 +267,7 @@ function checkKey(e) {
       if (!checkChangeNewState()) {
         addElementDiv();
         setLocalStorage();
+        checkWin();
       }
       break;
     case 40:
