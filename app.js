@@ -2,11 +2,11 @@ document.onkeydown = checkKey;
 const gameBoard = document.getElementById("game-board");
 const btnRestart = document.getElementById("btnRestart");
 const btnUndo = document.getElementById("btnUndo");
+const score = document.getElementById("score");
 let numbers = [];
 let checkIterationOnDesk = false;
 let stateEachElement = [];
 let newStateEachElement = [];
-const score = document.getElementById("score");
 
 const createArrayNumbers = () => {
   let number = Math.random() > 0.5 ? 1 : 2;
@@ -37,8 +37,10 @@ const gameOver = () => {
     element.removeAttribute("data-value");
   });
   addElementDiv();
+  newStateEachElement = [...getDiv].map((element) => element.textContent);
   state();
   setLocalStorage();
+  yourScore();
 };
 
 const setLocalStorage = () => {
@@ -68,6 +70,8 @@ const restoreData = () => {
     score.textContent = localStorage.getItem("yourScore");
 };
 const yourScore = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  newStateEachElement = [...getDiv].map((element) => element.textContent);
   let yourScoreString = newStateEachElement.map(Number);
   let yourScore = Math.max(
     ...yourScoreString.filter((element) => typeof element === "number")
@@ -102,8 +106,10 @@ const undo = () => {
       getDiv[i].removeAttribute("data-value");
     }
   }
+  newStateEachElement = [...getDiv].map((element) => element.textContent);
   state();
   setLocalStorage();
+  yourScore();
 };
 const addElementDiv = () => {
   const getDiv = document.getElementsByClassName("tile");
