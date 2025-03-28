@@ -37,7 +37,6 @@ const gameOver = () => {
     element.removeAttribute("data-value");
   });
   addElementDiv();
-  newStateEachElement = [...getDiv].map((element) => element.textContent);
   state();
   setLocalStorage();
   yourScore();
@@ -85,8 +84,6 @@ const state = () => {
   stateEachElement = [...getDiv].map((element) => element.textContent);
 };
 const checkChangeNewState = () => {
-  const getDiv = document.getElementsByClassName("tile");
-  newStateEachElement = [...getDiv].map((element) => element.textContent);
   yourScore();
   return (
     stateEachElement.length === newStateEachElement.length &&
@@ -106,7 +103,6 @@ const undo = () => {
       getDiv[i].removeAttribute("data-value");
     }
   }
-  newStateEachElement = [...getDiv].map((element) => element.textContent);
   state();
   setLocalStorage();
   yourScore();
@@ -346,5 +342,6 @@ document.addEventListener(
   },
   { passive: false }
 );
+
 btnRestart.addEventListener("click", gameOver);
 btnUndo.addEventListener("click", undo);
