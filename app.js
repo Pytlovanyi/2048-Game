@@ -7,6 +7,8 @@ let numbers = [];
 let checkIterationOnDesk = false;
 let stateEachElement = [];
 let newStateEachElement = [];
+let newStateForUndo = [];
+let oldState = [];
 
 const createArrayNumbers = () => {
   let number = Math.random() > 0.5 ? 1 : 2;
@@ -30,6 +32,7 @@ const iterateDiv = () => {
     getDiv[rand].setAttribute("data-value", element);
   });
 };
+
 const gameOver = () => {
   const getDiv = document.getElementsByClassName("tile");
   [...getDiv].forEach((element) => {
@@ -107,20 +110,64 @@ const undo = () => {
   setLocalStorage();
   yourScore();
 };
+const checkWin = () => {
+  const getDiv = document.getElementsByClassName("tile");
+  const tiles = [...getDiv];
+  let yourScore = tiles.reduce((acc, item) => {
+    let value = parseInt(item.textContent) || 0;
+    return acc > value ? acc : value;
+  }, 0);
+  if (yourScore == 2048) {
+    alert("You are a winner!!!");
+    gameOver();
+    return;
+  }
+  const arrayWithoutNumbers = tiles.filter(
+    (element) => !element.hasAttribute("data-value")
+  );
+  if (arrayWithoutNumbers.length == 0) {
+    let canMove = false;
+    const checkMoveVertical = (columnIndex) => {
+      const arrayLine = tiles.filter((_, index) => index % 4 === columnIndex);
+      for (let i = 0; i < arrayLine.length - 1; i++) {
+        if (arrayLine[i].textContent == arrayLine[i + 1].textContent) {
+          canMove = true;
+          return;
+        }
+      }
+    };
+    const checkMoveHorizontal = (columnIndex) => {
+      const arrayLine = tiles.filter(
+        (_, index) => index > columnIndex - 1 && index < columnIndex + 4
+      );
+      for (let i = 0; i < arrayLine.length - 1; i++) {
+        if (arrayLine[i].textContent == arrayLine[i + 1].textContent) {
+          canMove = true;
+          return;
+        }
+      }
+    };
+    checkMoveHorizontal(0);
+    checkMoveHorizontal(4);
+    checkMoveHorizontal(8);
+    checkMoveHorizontal(12);
+    checkMoveVertical(0);
+    checkMoveVertical(1);
+    checkMoveVertical(2);
+    checkMoveVertical(3);
+    if (canMove == false) {
+      alert(`Game over. Your Score = ${yourScore}`);
+      gameOver();
+    }
+  }
+};
+
 const addElementDiv = () => {
   const getDiv = document.getElementsByClassName("tile");
   const arrayWithoutNumbers = [...getDiv].filter(
     (element) => !element.hasAttribute("data-value")
   );
-  let yourScore = [...getDiv].reduce((acc, item) => {
-    let value = parseInt(item.textContent) || 0;
-    return acc > value ? acc : value;
-  }, 0);
-  if (yourScore == 2048) alert("You are a winner!!!");
-  if (arrayWithoutNumbers.length == 0) {
-    alert(`Game Over! Your score: ${yourScore}`);
-    gameOver();
-  } else {
+  if (arrayWithoutNumbers.length !== 0) {
     const rand = Math.floor(Math.random() * arrayWithoutNumbers.length);
     let number = Math.random() > 0.5 ? 2 : 4;
     arrayWithoutNumbers[rand].textContent = number;
@@ -260,6 +307,7 @@ function checkKey(e) {
       if (!checkChangeNewState()) {
         addElementDiv();
         setLocalStorage();
+        checkWin();
       }
       break;
     case 40:
@@ -271,6 +319,7 @@ function checkKey(e) {
       if (!checkChangeNewState()) {
         addElementDiv();
         setLocalStorage();
+        checkWin();
       }
       break;
     case 37:
@@ -282,6 +331,7 @@ function checkKey(e) {
       if (!checkChangeNewState()) {
         addElementDiv();
         setLocalStorage();
+        checkWin();
       }
       break;
     case 39:
@@ -293,6 +343,7 @@ function checkKey(e) {
       if (!checkChangeNewState()) {
         addElementDiv();
         setLocalStorage();
+        checkWin();
       }
       break;
   }
@@ -334,14 +385,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
-
-document.addEventListener(
-  "touchmove",
-  function (event) {
-    event.preventDefault();
-  },
-  { passive: false }
-);
 
 btnRestart.addEventListener("click", gameOver);
 btnUndo.addEventListener("click", undo);
